@@ -2,7 +2,6 @@
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
-// GitHub repo ka exact case-sensitive naam (e.g. 'vibe-wish')
 const repoName = "vibe-wish";
 
 const nextConfig: NextConfig = {
