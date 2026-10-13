@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight, Smile } from "lucide-react";
+import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare  } from "lucide-react";
 
 const TEMPLATES = [
   {
@@ -14,6 +14,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "chat",
+    title: "The Birthday Chat 😂💖",
+    target: "WhatsApp-Style Adventure",
+    description: "Realistic chat bubbles, typing indicators, funny reply branches, 3D cake reveal & pizza treat drama.",
+    badge: "Most Viral 💬",
+    href: "/create/chat",
+    border: "hover:border-emerald-500/50",
+    glow: "group-hover:shadow-emerald-500/20",
+    icon: MessageSquare,
+    iconColor: "text-emerald-400 bg-emerald-500/10",
+  },
+
   {
     id: "birthday",
     title: "Birthdayverse 3D Experience",
