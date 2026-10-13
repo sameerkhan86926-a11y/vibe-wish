@@ -1,7 +1,31 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight } from "lucide-react";
+import { Heart, Flame, Award, Sparkles, ArrowRight, Smile } from "lucide-react";
 
 const TEMPLATES = [
+  {
+    id: "oops",
+    title: "Oops! It's Your Birthday 😂💖",
+    target: "Comedy + Love + Surprises",
+    description: "Runaway dodge button, funny ego quiz, interactive candle blowing, roast machine & sealed love letter.",
+    badge: "Trending Fun 🔥",
+    href: "/create/oops",
+    border: "hover:border-pink-500/50",
+    glow: "group-hover:shadow-pink-500/20",
+    icon: Smile,
+    iconColor: "text-pink-400 bg-pink-500/10",
+  },
+  {
+    id: "birthday",
+    title: "Birthdayverse 3D Experience",
+    target: "Ultimate Birthday",
+    description: "Cinematic unwrap box, 3D interactive blowing candles cake, audio melody, photo memories, sealed letter & guest wish wall.",
+    badge: "Flagship 🎂",
+    href: "/create/birthday",
+    border: "hover:border-amber-400/50",
+    glow: "group-hover:shadow-amber-400/20",
+    icon: Sparkles,
+    iconColor: "text-amber-300 bg-amber-400/10",
+  },
   {
     id: "gf",
     title: "Blooming Romance & Flowers",
@@ -50,31 +74,6 @@ const TEMPLATES = [
     icon: Sparkles,
     iconColor: "text-purple-400 bg-purple-500/10",
   },
-    {
-    id: "birthday",
-    title: "Birthdayverse 3D Experience",
-    target: "Ultimate Birthday",
-    description: "Cinematic unwrap box, 3D interactive blowing candles cake, audio melody, photo memories, sealed letter & guest wish wall.",
-    badge: "Flagship 🎂",
-    href: "/create/birthday",
-    border: "hover:border-amber-400/50",
-    glow: "group-hover:shadow-amber-400/20",
-    icon: Sparkles,
-    iconColor: "text-amber-300 bg-amber-400/10",
-  },
-  {
-    id: "oops",
-    title: "Oops! It's Your Birthday 😂💖",
-    target: "Comedy + Love + Surprises",
-    description: "Runaway dodge button, funny ego quiz, interactive candle blowing, roast machine & sealed love letter.",
-    badge: "Trending Fun 🔥",
-    href: "/create/oops",
-    border: "hover:border-pink-500/50",
-    glow: "group-hover:shadow-pink-500/20",
-    icon: Smile,
-    iconColor: "text-pink-400 bg-pink-500/10",
-  },
-
 ];
 
 export default function Home() {
@@ -98,7 +97,6 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Template Grid Cards */}
       <div className="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-2">
         {TEMPLATES.map((item) => {
           const Icon = item.icon;
