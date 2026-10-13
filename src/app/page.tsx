@@ -50,6 +50,19 @@ const TEMPLATES = [
     icon: Sparkles,
     iconColor: "text-purple-400 bg-purple-500/10",
   },
+    {
+    id: "birthday",
+    title: "Birthdayverse 3D Experience",
+    target: "Ultimate Birthday",
+    description: "Cinematic unwrap box, 3D interactive blowing candles cake, audio melody, photo memories, sealed letter & guest wish wall.",
+    badge: "Flagship 🎂",
+    href: "/create/birthday",
+    border: "hover:border-amber-400/50",
+    glow: "group-hover:shadow-amber-400/20",
+    icon: Sparkles,
+    iconColor: "text-amber-300 bg-amber-400/10",
+  },
+
 ];
 
 export default function Home() {
