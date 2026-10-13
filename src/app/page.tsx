@@ -62,6 +62,18 @@ const TEMPLATES = [
     icon: Sparkles,
     iconColor: "text-amber-300 bg-amber-400/10",
   },
+  {
+    id: "oops",
+    title: "Oops! It's Your Birthday 😂💖",
+    target: "Comedy + Love + Surprises",
+    description: "Runaway dodge button, funny ego quiz, interactive candle blowing, roast machine & sealed love letter.",
+    badge: "Trending Fun 🔥",
+    href: "/create/oops",
+    border: "hover:border-pink-500/50",
+    glow: "group-hover:shadow-pink-500/20",
+    icon: Smile,
+    iconColor: "text-pink-400 bg-pink-500/10",
+  },
 
 ];
 
