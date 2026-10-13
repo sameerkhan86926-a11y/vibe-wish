@@ -1,12 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  color-scheme: dark;
+}
 
-  :root {
-    --font-serif: 'Playfair Display', Georgia, serif;
-    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-  }
+body {
+  background-color: #09090b;
+  color: #fafafa;
+  overflow-x: hidden;
 }
 
 .font-serif-luxury {
@@ -17,18 +21,6 @@
   font-family: var(--font-sans);
 }
 
-/* 3D Perspective Utilities */
-.perspective-1000 {
-  perspective: 1000px;
-}
-.transform-style-3d {
-  transform-style: preserve-3d;
-}
-.backface-hidden {
-  backface-visibility: hidden;
-}
-
-/* Custom Candle Flame Flicker */
 @keyframes flameFlicker {
   0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
   25% { transform: scale(1.08, 0.95) rotate(2deg); opacity: 1; }
