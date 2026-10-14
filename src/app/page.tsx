@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2, Smartphone, Skull } from "lucide-react";
+import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2, Smartphone, Skull, Bell } from "lucide-react";
 
 const TEMPLATES = [
   {
@@ -14,6 +14,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "notification",
+    title: "POV: You're My Favourite Notification ❤️‍🩹",
+    target: "Gen Z Aesthetic Anniversary",
+    description: "Lockscreen pill notification, flower tea confessions, iconic chat, Spotify-style wrapped & blushing letter.",
+    badge: "Gen Z Aesthetic 🔔",
+    href: "/create/notification",
+    border: "hover:border-rose-500/50",
+    glow: "group-hover:shadow-rose-500/20",
+    icon: Bell,
+    iconColor: "text-rose-400 bg-rose-500/10",
+  },
+
     {
     id: "garden",
     title: "A Garden Full of Us 🌹",
