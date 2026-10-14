@@ -29,6 +29,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "jaan",
+    title: "Jaan's Birthday 🎂👑",
+    target: "Girlfriend / My Princess",
+    description: "Gift box opening, rose rain, butterfly paradise, cute cuddle teddy, moonlit stars & flying kisses.",
+    badge: "Ultimate Romance 💖",
+    href: "/create/jaan",
+    border: "hover:border-rose-500/50",
+    glow: "group-hover:shadow-rose-500/20",
+    icon: Heart,
+    iconColor: "text-rose-400 bg-rose-500/10",
+  },
+
   {
     id: "notification",
     title: "POV: You're My Favourite Notification ❤️‍🩹",
