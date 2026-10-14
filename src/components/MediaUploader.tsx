@@ -1,55 +1,70 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, Copy, Check, Image as ImageIcon, Music, Video, Sparkles, Loader2, ExternalLink } from "lucide-react";
+import { Upload, Copy, Check, Image as ImageIcon, Music, Video, Loader2, AlertCircle } from "lucide-react";
 
 export default function MediaUploader() {
   const [fileType, setFileType] = useState<"image" | "audio" | "video">("image");
   const [uploading, setUploading] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Cloudinary Direct Upload (Free Unsigned Preset)
-  // Tum apna custom Cloudinary Cloud Name & Upload Preset yahan daal sakte ho ya demo preset use kar sakte ho
-  const CLOUD_NAME = "demo"; // Free public sandbox (Prod ke liye apna free cloudinary cloud name daal sakte ho)
-  const UPLOAD_PRESET = "docs_upload_example"; 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setError(null);
+    // File size check: > 15MB avoid karo taaki phone hang na ho
+    if (file.size > 15 * 1024 * 1024) {
+      setErrorMsg("File size 15MB se chhoti honi chahiye!");
+      return;
+    }
+
+    setErrorMsg(null);
     setUploading(true);
     setUploadedUrl(null);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
-
-    const resourceType = fileType === "image" ? "image" : fileType === "video" ? "video" : "auto";
-
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`, {
+      // 1. Tmpfiles API - 100% Free, No Login, Supports Audio, Video & Images
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("https://tmpfiles.org/api/v1/upload", {
         method: "POST",
         body: formData,
       });
 
-      const json = await res.json();
-      if (json.secure_url) {
-        setUploadedUrl(json.secure_url);
+      const data = await res.json();
+
+      if (data && data.status === "success" && data.data?.url) {
+        // tmpfiles.org/1234/xyz.jpg ko direct download link banane ke liye /dl/ add karte hain
+        const rawUrl = data.data.url;
+        const directUrl = rawUrl.replace("tmpfiles.org/", "tmpfiles.org/dl/");
+        setUploadedUrl(directUrl);
       } else {
-        // Fallback to Catbox/Tmpfiles if needed
-        throw new Error(json.error?.message || "Upload failed");
+        throw new Error("Upload failed, trying alternative...");
       }
     } catch (err: any) {
-      // Fallback simple Base64 or local object URL for preview demo
-      setError("Free cloud quota reached. Using instant direct data link:");
-      const reader = new FileReader();
-      reader.onload = () => {
-        setUploadedUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      // 2. Fallback: Catbox / FileTransfer if tmpfiles fails
+      try {
+        const catboxForm = new FormData();
+        catboxForm.append("reqtype", "fileupload");
+        catboxForm.append("fileToUpload", file);
+
+        const fallbackRes = await fetch("https://catbox.moe/user/api.php", {
+          method: "POST",
+          body: catboxForm,
+        });
+
+        const fallbackUrl = await fallbackRes.text();
+        if (fallbackUrl && fallbackUrl.startsWith("http")) {
+          setUploadedUrl(fallbackUrl.trim());
+        } else {
+          setErrorMsg("Upload me dikkat aayi. Ek baar direct Imgur ya Unsplash link try karo.");
+        }
+      } catch (fallbackErr) {
+        setErrorMsg("Network issue! Kripya chhota file size try karein.");
+      }
     } finally {
       setUploading(false);
     }
@@ -72,9 +87,11 @@ export default function MediaUploader() {
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
               <span>Instant Media Uploader</span>
-              <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-mono text-rose-300 font-bold">FREE TOOL</span>
+              <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-mono text-rose-300 font-bold">
+                LIGHTWEIGHT DIRECT URL
+              </span>
             </h3>
-            <p className="text-[11px] text-zinc-400">Upload Image, Voice Note ya Video ➔ Get direct URL for templates</p>
+            <p className="text-[11px] text-zinc-400">Direct CDN link milta hai taaki template hang na ho</p>
           </div>
         </div>
       </div>
@@ -84,7 +101,7 @@ export default function MediaUploader() {
         {[
           { id: "image", label: "Image / Photo", icon: ImageIcon },
           { id: "audio", label: "Audio / Voice", icon: Music },
-          { id: "video", label: "Video Clip", icon: Video }
+          { id: "video", label: "Video Clip", icon: Video },
         ].map((item) => {
           const Icon = item.icon;
           const active = fileType === item.id;
@@ -95,7 +112,7 @@ export default function MediaUploader() {
               onClick={() => {
                 setFileType(item.id as any);
                 setUploadedUrl(null);
-                setError(null);
+                setErrorMsg(null);
               }}
               className={`cursor-pointer flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition-all ${
                 active
@@ -122,29 +139,36 @@ export default function MediaUploader() {
         {uploading ? (
           <div className="flex flex-col items-center gap-2 text-rose-300">
             <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="text-xs font-mono">Uploading & generating link...</span>
+            <span className="text-xs font-mono">Generating clean direct link...</span>
           </div>
         ) : (
           <div className="flex flex-col items-center text-center p-4">
             <Upload className="h-6 w-6 text-zinc-400 mb-1" />
             <p className="text-xs font-bold text-zinc-200">
-              Tap to choose {fileType} from your phone/PC
+              Tap to choose {fileType} from gallery/files
             </p>
             <p className="text-[10px] text-zinc-500 mt-0.5">
-              PNG, JPG, MP3, WAV, MP4 supported
+              JPG, PNG, MP3, M4A, MP4 (Max 15MB)
             </p>
           </div>
         )}
       </label>
 
-      {/* Result Display & Quick Copy */}
+      {errorMsg && (
+        <div className="mt-3 rounded-xl border border-red-500/30 bg-red-950/30 p-2.5 text-xs text-red-300 flex items-center gap-1.5">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
+      {/* Direct URL Result */}
       {uploadedUrl && (
         <div className="mt-4 rounded-2xl border border-emerald-500/40 bg-emerald-950/20 p-3.5 animate-in fade-in">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-mono uppercase font-bold text-emerald-400 flex items-center gap-1">
-              <Check className="h-3 w-3" /> DIRECT URL READY TO USE:
+              <Check className="h-3 w-3" /> CLEAN DIRECT LINK READY:
             </span>
-            <span className="text-[10px] text-zinc-400">Paste in any template</span>
+            <span className="text-[10px] text-zinc-400">Zero Hang Guarantee</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -152,7 +176,7 @@ export default function MediaUploader() {
               type="text"
               readOnly
               value={uploadedUrl}
-              className="w-full rounded-xl border border-zinc-800 bg-black px-3 py-1.5 text-xs text-zinc-200 font-mono select-all truncate"
+              className="w-full rounded-xl border border-zinc-800 bg-black px-3 py-1.5 text-xs text-emerald-300 font-mono select-all"
             />
             <button
               type="button"
