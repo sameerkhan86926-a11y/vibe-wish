@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2  } from "lucide-react";
+import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2, Smartphone  } from "lucide-react";
 
 const TEMPLATES = [
   {
@@ -14,6 +14,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "aakhri",
+    title: "Ek Aakhri Message 💌",
+    target: "Real Phone Archive & Unsent Words",
+    description: "Realistic lock screen, paced chat intervals, camera roll moments, voice memo waveform & handwritten unsent draft.",
+    badge: "Cinematic Real 📱",
+    href: "/create/aakhri",
+    border: "hover:border-zinc-500/50",
+    glow: "group-hover:shadow-zinc-500/20",
+    icon: Smartphone,
+    iconColor: "text-zinc-300 bg-zinc-800",
+  },
+
     {
     id: "blooming",
     title: "Blooming Love ❤️🌹",
