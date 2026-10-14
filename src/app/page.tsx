@@ -15,6 +15,19 @@ const TEMPLATES = [
     iconColor: "text-pink-400 bg-pink-500/10",
   },
     {
+    id: "us",
+    title: "US.exe ❤️ — Our Little Universe",
+    target: "Couple Story & Secret OS",
+    description: "Orbiting universe portal, relationship diagnostics, chat mood branches, jealousy test & secret love vault.",
+    badge: "For Couples 🪐",
+    href: "/create/us",
+    border: "hover:border-rose-500/50",
+    glow: "group-hover:shadow-rose-500/20",
+    icon: Heart,
+    iconColor: "text-rose-400 bg-rose-500/10",
+  },
+
+    {
     id: "chat",
     title: "The Birthday Chat 😂💖",
     target: "WhatsApp-Style Adventure",
