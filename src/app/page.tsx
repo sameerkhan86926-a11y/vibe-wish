@@ -1,12 +1,27 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2, Smartphone, Skull, Bell } from "lucide-react";
+import {
+  Heart,
+  Flame,
+  Award,
+  Sparkles,
+  ArrowRight,
+  Smile,
+  MessageSquare,
+  HeartHandshake,
+  Flower2,
+  Smartphone,
+  Skull,
+  Bell,
+} from "lucide-react";
+import MediaUploader from "@/components/MediaUploader";
 
 const TEMPLATES = [
   {
     id: "oops",
     title: "Oops! It's Your Birthday 😂💖",
     target: "Comedy + Love + Surprises",
-    description: "Runaway dodge button, funny ego quiz, interactive candle blowing, roast machine & sealed love letter.",
+    description:
+      "Runaway dodge button, funny ego quiz, interactive candle blowing, roast machine & sealed love letter.",
     badge: "Trending Fun 🔥",
     href: "/create/oops",
     border: "hover:border-pink-500/50",
@@ -14,11 +29,12 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
-    {
+  {
     id: "notification",
     title: "POV: You're My Favourite Notification ❤️‍🩹",
     target: "Gen Z Aesthetic Anniversary",
-    description: "Lockscreen pill notification, flower tea confessions, iconic chat, Spotify-style wrapped & blushing letter.",
+    description:
+      "Lockscreen pill notification, flower tea confessions, iconic chat, Spotify-style wrapped & blushing letter.",
     badge: "Gen Z Aesthetic 🔔",
     href: "/create/notification",
     border: "hover:border-rose-500/50",
@@ -26,12 +42,12 @@ const TEMPLATES = [
     icon: Bell,
     iconColor: "text-rose-400 bg-rose-500/10",
   },
-
-    {
+  {
     id: "garden",
     title: "A Garden Full of Us 🌹",
     target: "Cinematic Botanical Anniversary",
-    description: "Flower ➡️ Message pacing, dewdrop balcony, memory pathway, moonlight lily & interactive 3-flower pick.",
+    description:
+      "Flower ➡️ Message pacing, dewdrop balcony, memory pathway, moonlight lily & interactive 3-flower pick.",
     badge: "Cinema Garden 🥀",
     href: "/create/garden",
     border: "hover:border-rose-500/50",
@@ -39,12 +55,12 @@ const TEMPLATES = [
     icon: Flower2,
     iconColor: "text-rose-400 bg-rose-500/10",
   },
-
-    {
+  {
     id: "simulation",
     title: "The Simulation is Broken 💀",
     target: "Weird & Dark Comedy Internet",
-    description: "Zero purpose loader, live roaster, cursed runaway button, fake system panic, useless AI & escape boss.",
+    description:
+      "Zero purpose loader, live roaster, cursed runaway button, fake system panic, useless AI & escape boss.",
     badge: "Most Unhinged 💀",
     href: "/create/simulation",
     border: "hover:border-red-600/50",
@@ -52,12 +68,12 @@ const TEMPLATES = [
     icon: Skull,
     iconColor: "text-red-400 bg-red-600/10",
   },
-
-    {
+  {
     id: "aakhri",
     title: "Ek Aakhri Message 💌",
     target: "Real Phone Archive & Unsent Words",
-    description: "Realistic lock screen, paced chat intervals, camera roll moments, voice memo waveform & handwritten unsent draft.",
+    description:
+      "Realistic lock screen, paced chat intervals, camera roll moments, voice memo waveform & handwritten unsent draft.",
     badge: "Cinematic Real 📱",
     href: "/create/aakhri",
     border: "hover:border-zinc-500/50",
@@ -65,12 +81,12 @@ const TEMPLATES = [
     icon: Smartphone,
     iconColor: "text-zinc-300 bg-zinc-800",
   },
-
-    {
+  {
     id: "blooming",
     title: "Blooming Love ❤️🌹",
     target: "Grand Proposal & Romance",
-    description: "Moonlit flower garden, interactive bud bloom, memory cards, sealed parchment & grand proposal scene.",
+    description:
+      "Moonlit flower garden, interactive bud bloom, memory cards, sealed parchment & grand proposal scene.",
     badge: "Grand Proposal 💍",
     href: "/create/blooming",
     border: "hover:border-rose-500/50",
@@ -78,12 +94,12 @@ const TEMPLATES = [
     icon: Flower2,
     iconColor: "text-rose-400 bg-rose-500/10",
   },
-
-    {
+  {
     id: "manaao",
     title: "Mission: Manaao Them 🥺❤️",
     target: "When Someone is Angry",
-    description: "Gussa warning meter, funny sorry machine, simulated chat banter, mini peace tasks & sincere letter.",
+    description:
+      "Gussa warning meter, funny sorry machine, simulated chat banter, mini peace tasks & sincere letter.",
     badge: "Life Saver 🩹",
     href: "/create/manaao",
     border: "hover:border-rose-400/50",
@@ -91,12 +107,12 @@ const TEMPLATES = [
     icon: HeartHandshake,
     iconColor: "text-rose-300 bg-rose-500/10",
   },
-
-    {
+  {
     id: "us",
     title: "US.exe ❤️ — Our Little Universe",
     target: "Couple Story & Secret OS",
-    description: "Orbiting universe portal, relationship diagnostics, chat mood branches, jealousy test & secret love vault.",
+    description:
+      "Orbiting universe portal, relationship diagnostics, chat mood branches, jealousy test & secret love vault.",
     badge: "For Couples 🪐",
     href: "/create/us",
     border: "hover:border-rose-500/50",
@@ -104,12 +120,12 @@ const TEMPLATES = [
     icon: Heart,
     iconColor: "text-rose-400 bg-rose-500/10",
   },
-
-    {
+  {
     id: "chat",
     title: "The Birthday Chat 😂💖",
     target: "WhatsApp-Style Adventure",
-    description: "Realistic chat bubbles, typing indicators, funny reply branches, 3D cake reveal & pizza treat drama.",
+    description:
+      "Realistic chat bubbles, typing indicators, funny reply branches, 3D cake reveal & pizza treat drama.",
     badge: "Most Viral 💬",
     href: "/create/chat",
     border: "hover:border-emerald-500/50",
@@ -117,12 +133,12 @@ const TEMPLATES = [
     icon: MessageSquare,
     iconColor: "text-emerald-400 bg-emerald-500/10",
   },
-
   {
     id: "birthday",
     title: "Birthdayverse 3D Experience",
     target: "Ultimate Birthday",
-    description: "Cinematic unwrap box, 3D interactive blowing candles cake, audio melody, photo memories, sealed letter & guest wish wall.",
+    description:
+      "Cinematic unwrap box, 3D interactive blowing candles cake, audio melody, photo memories, sealed letter & guest wish wall.",
     badge: "Flagship 🎂",
     href: "/create/birthday",
     border: "hover:border-amber-400/50",
@@ -134,7 +150,8 @@ const TEMPLATES = [
     id: "gf",
     title: "Blooming Romance & Flowers",
     target: "Girlfriend / Partner",
-    description: "Falling rose petals, run-away security question & heartfelt glowing letter.",
+    description:
+      "Falling rose petals, run-away security question & heartfelt glowing letter.",
     badge: "Most Loved 🌹",
     href: "/create/gf",
     border: "hover:border-rose-500/50",
@@ -146,7 +163,8 @@ const TEMPLATES = [
     id: "friend",
     title: "The Ultimate Friend Roast",
     target: "Bestie / Homie",
-    description: "Fake police arrest warrant, toxicity meter, meme stickers & pure savage vibes.",
+    description:
+      "Fake police arrest warrant, toxicity meter, meme stickers & pure savage vibes.",
     badge: "Unhinged ⚡",
     href: "/create/friend",
     border: "hover:border-emerald-500/50",
@@ -158,7 +176,8 @@ const TEMPLATES = [
     id: "father",
     title: "Parchment of Gratitude",
     target: "Dad / Mentor",
-    description: "Classic Forbes-style magazine tribute, timeless typography & emotional respect.",
+    description:
+      "Classic Forbes-style magazine tribute, timeless typography & emotional respect.",
     badge: "Classic 🎖️",
     href: "/create/father",
     border: "hover:border-amber-500/50",
@@ -170,7 +189,8 @@ const TEMPLATES = [
     id: "anniversary",
     title: "Cinema Premiere Night",
     target: "Couple Anniversary",
-    description: "Netflix-style movie debut, milestone countdown ticker & champagne sparkles.",
+    description:
+      "Netflix-style movie debut, milestone countdown ticker & champagne sparkles.",
     badge: "Luxury 🥂",
     href: "/create/anniversary",
     border: "hover:border-purple-500/50",
@@ -183,6 +203,7 @@ const TEMPLATES = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-16 text-zinc-100 sm:px-8">
+      {/* Hero Header */}
       <div className="mx-auto max-w-4xl text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-4 py-1.5 text-xs font-semibold tracking-wide text-zinc-400">
           <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -201,7 +222,23 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-2">
+      {/* Instant Media Uploader Utility Widget */}
+      <div className="my-12">
+        <MediaUploader />
+      </div>
+
+      {/* Catalog Title */}
+      <div className="mx-auto max-w-4xl text-center mb-6">
+        <h2 className="text-xl font-bold text-white uppercase tracking-wider">
+          Choose Your Interactive Template
+        </h2>
+        <p className="text-xs text-zinc-500">
+          Pick any vibe below and create in 60 seconds
+        </p>
+      </div>
+
+      {/* Template Grid Cards */}
+      <div className="mx-auto grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-2">
         {TEMPLATES.map((item) => {
           const Icon = item.icon;
           return (
@@ -212,7 +249,9 @@ export default function Home() {
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${item.iconColor}`}>
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-2xl ${item.iconColor}`}
+                  >
                     <Icon className="h-6 w-6" />
                   </div>
                   <span className="rounded-full border border-zinc-800 bg-black/60 px-3 py-1 text-[11px] font-semibold text-zinc-300">
