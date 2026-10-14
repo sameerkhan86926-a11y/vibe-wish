@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2, Smartphone  } from "lucide-react";
+import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2, Smartphone, Skull } from "lucide-react";
 
 const TEMPLATES = [
   {
@@ -14,6 +14,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "simulation",
+    title: "The Simulation is Broken 💀",
+    target: "Weird & Dark Comedy Internet",
+    description: "Zero purpose loader, live roaster, cursed runaway button, fake system panic, useless AI & escape boss.",
+    badge: "Most Unhinged 💀",
+    href: "/create/simulation",
+    border: "hover:border-red-600/50",
+    glow: "group-hover:shadow-red-600/20",
+    icon: Skull,
+    iconColor: "text-red-400 bg-red-600/10",
+  },
+
     {
     id: "aakhri",
     title: "Ek Aakhri Message 💌",
