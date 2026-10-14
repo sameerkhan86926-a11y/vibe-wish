@@ -15,6 +15,19 @@ const TEMPLATES = [
     iconColor: "text-pink-400 bg-pink-500/10",
   },
     {
+    id: "garden",
+    title: "A Garden Full of Us 🌹",
+    target: "Cinematic Botanical Anniversary",
+    description: "Flower ➡️ Message pacing, dewdrop balcony, memory pathway, moonlight lily & interactive 3-flower pick.",
+    badge: "Cinema Garden 🥀",
+    href: "/create/garden",
+    border: "hover:border-rose-500/50",
+    glow: "group-hover:shadow-rose-500/20",
+    icon: Flower2,
+    iconColor: "text-rose-400 bg-rose-500/10",
+  },
+
+    {
     id: "simulation",
     title: "The Simulation is Broken 💀",
     target: "Weird & Dark Comedy Internet",
