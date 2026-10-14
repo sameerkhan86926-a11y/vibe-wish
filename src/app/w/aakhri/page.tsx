@@ -39,14 +39,27 @@ export default function AakhriMessageReceiver() {
     setCurrentDateStr(d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }));
 
     if (typeof window !== "undefined") {
-      const hash = window.location.hash.replace("#", "");
-      const params = new URLSearchParams(hash || window.location.search);
-      const raw = params.get("d");
-      if (raw) {
-        const decoded = decodeData(raw) as unknown as AakhriMessagePayload;
-        if (decoded) {
-          setData(decoded);
-          return;
+      // Robust hash and search param parsing
+      const fullUrl = window.location.href;
+      let rawData: string | null = null;
+
+      if (window.location.hash.includes("d=")) {
+        const hashPart = window.location.hash.split("d=")[1];
+        rawData = hashPart ? decodeURIComponent(hashPart.split("&")[0]) : null;
+      } else {
+        const params = new URLSearchParams(window.location.search);
+        rawData = params.get("d");
+      }
+
+      if (rawData) {
+        try {
+          const decoded = decodeData(rawData) as unknown as AakhriMessagePayload;
+          if (decoded && decoded.recipientName) {
+            setData(decoded);
+            return;
+          }
+        } catch (e) {
+          console.error("Failed to decode user payload", e);
         }
       }
 
@@ -66,7 +79,7 @@ export default function AakhriMessageReceiver() {
           {
             id: "1",
             dateStr: "12 Nov 2022",
-            imgUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600",
+            imgUrl: FALLBACK_PHOTO,
             caption: "Wo pehli baar jab hum bina kisi reason ke ghanton chalte rahe the. Koi jaldi nahi thi ghar jaane ki."
           },
           {
@@ -247,9 +260,12 @@ export default function AakhriMessageReceiver() {
                           src={mem.imgUrl || FALLBACK_PHOTO}
                           alt="Memory"
                           referrerPolicy="no-referrer"
-                          crossOrigin="anonymous"
+                          loading="lazy"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = FALLBACK_PHOTO;
+                            const target = e.target as HTMLImageElement;
+                            if (target.src !== FALLBACK_PHOTO) {
+                              target.src = FALLBACK_PHOTO;
+                            }
                           }}
                           className="h-full w-full object-cover filter contrast-105 group-hover:scale-105 transition-transform duration-300"
                         />
@@ -346,9 +362,11 @@ export default function AakhriMessageReceiver() {
                   src={selectedMemory.imgUrl || FALLBACK_PHOTO}
                   alt={selectedMemory.caption || "Memory"}
                   referrerPolicy="no-referrer"
-                  crossOrigin="anonymous"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = FALLBACK_PHOTO;
+                    const target = e.target as HTMLImageElement;
+                    if (target.src !== FALLBACK_PHOTO) {
+                      target.src = FALLBACK_PHOTO;
+                    }
                   }}
                   className="h-full w-full object-cover"
                 />
