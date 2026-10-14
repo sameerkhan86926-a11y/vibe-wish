@@ -9,68 +9,76 @@ export default function MediaUploader() {
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [imgLoadFailed, setImgLoadFailed] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 25 * 1024 * 1024) {
-      setErrorMsg("File size 25MB se chhoti honi chahiye!");
+    if (file.size > 20 * 1024 * 1024) {
+      setErrorMsg("File size 20MB se kam honi chahiye!");
       return;
     }
 
     setErrorMsg(null);
     setUploading(true);
     setUploadedUrl(null);
+    setImgLoadFailed(false);
 
-    // 1. IMAGE UPLOAD: ImgBB Public Direct API (Zero CORS Issue)
-    if (fileType === "image") {
-      try {
+    try {
+      if (fileType === "image") {
+        // ImgBB requires base64 string for direct browser uploads without CORS rejection
+        const base64Data = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const res = reader.result as string;
+            // Remove "data:image/...;base64," prefix
+            resolve(res.split(",")[1]);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
         const formData = new FormData();
-        formData.append("image", file);
+        formData.append("image", base64Data);
 
-        // Public working ImgBB key for direct client-side uploads
+        // ImgBB Public REST Endpoint (Works in all browsers)
         const res = await fetch("https://api.imgbb.com/1/upload?key=8bc47e33526362d25032049d5ef31bf8", {
           method: "POST",
           body: formData,
         });
 
         const json = await res.json();
-        if (json && json.success && json.data?.url) {
-          // Direct permanent display URL
-          const directImg = json.data.display_url || json.data.url;
-          setUploadedUrl(directImg);
+
+        if (json.success && json.data) {
+          // Direct image CDN link (.jpg/.png)
+          const directUrl = json.data.display_url || json.data.url;
+          setUploadedUrl(directUrl);
           setUploading(false);
           return;
         } else {
-          throw new Error("ImgBB rejected file");
+          throw new Error(json.error?.message || "Image upload rejected");
         }
-      } catch (imgErr) {
-        console.warn("Retrying with fallback host...", imgErr);
       }
-    }
 
-    // 2. AUDIO / VIDEO & Fallback (Catbox / Tmpfiles API)
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
+      // Audio / Video upload via Catbox
+      const catboxForm = new FormData();
+      catboxForm.append("reqtype", "fileupload");
+      catboxForm.append("fileToUpload", file);
 
-      const res = await fetch("https://tmpfiles.org/api/v1/upload", {
+      const catRes = await fetch("https://catbox.moe/user/api.php", {
         method: "POST",
-        body: formData,
+        body: catboxForm,
       });
 
-      const data = await res.json();
-      if (data && data.status === "success" && data.data?.url) {
-        const rawUrl = data.data.url;
-        // Direct media stream link format
-        const directMedia = rawUrl.replace("tmpfiles.org/", "tmpfiles.org/dl/");
-        setUploadedUrl(directMedia);
+      const catUrl = await catRes.text();
+      if (catUrl && catUrl.startsWith("http")) {
+        setUploadedUrl(catUrl.trim());
       } else {
-        throw new Error("Temporary host error");
+        throw new Error("Media upload failed");
       }
-    } catch (fallbackErr) {
-      setErrorMsg("Upload me error aaya. Kripya chhota file size try karein ya internet check karein.");
+    } catch (err: any) {
+      setErrorMsg("Upload me dikkat aayi. Ek baar internet check karein ya direct image link use karein.");
     } finally {
       setUploading(false);
     }
@@ -97,12 +105,12 @@ export default function MediaUploader() {
                 DIRECT CDN
               </span>
             </h3>
-            <p className="text-[11px] text-zinc-400">Image ya Voice upload karo ➔ Direct usable link mil jayega</p>
+            <p className="text-[11px] text-zinc-400">File upload karo ➔ Direct working URL mil jayega</p>
           </div>
         </div>
       </div>
 
-      {/* Type Switcher */}
+      {/* Media Type Switcher */}
       <div className="grid grid-cols-3 gap-2 mb-4">
         {[
           { id: "image", label: "Image / Photo", icon: ImageIcon },
@@ -119,6 +127,7 @@ export default function MediaUploader() {
                 setFileType(item.id as any);
                 setUploadedUrl(null);
                 setErrorMsg(null);
+                setImgLoadFailed(false);
               }}
               className={`cursor-pointer flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition-all ${
                 active
@@ -133,7 +142,7 @@ export default function MediaUploader() {
         })}
       </div>
 
-      {/* Upload Drop Zone */}
+      {/* Upload Zone */}
       <label className="relative flex flex-col items-center justify-center w-full h-32 rounded-2xl border-2 border-dashed border-zinc-700 hover:border-rose-400 bg-black/40 hover:bg-black/60 cursor-pointer transition-all">
         <input
           type="file"
@@ -145,7 +154,7 @@ export default function MediaUploader() {
         {uploading ? (
           <div className="flex flex-col items-center gap-2 text-rose-300">
             <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="text-xs font-mono">Uploading to CDN... Ek second ruko</span>
+            <span className="text-xs font-mono">Generating direct CDN link...</span>
           </div>
         ) : (
           <div className="flex flex-col items-center text-center p-4">
@@ -154,7 +163,7 @@ export default function MediaUploader() {
               Tap to choose {fileType} from gallery/files
             </p>
             <p className="text-[10px] text-zinc-500 mt-0.5">
-              Instant direct URL (No question mark)
+              Generates permanent direct link
             </p>
           </div>
         )}
@@ -167,14 +176,14 @@ export default function MediaUploader() {
         </div>
       )}
 
-      {/* Preview & Copy Box */}
+      {/* Result Section */}
       {uploadedUrl && (
         <div className="mt-4 rounded-2xl border border-emerald-500/40 bg-emerald-950/20 p-3.5 animate-in fade-in">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-mono uppercase font-bold text-emerald-400 flex items-center gap-1">
               <Check className="h-3 w-3" /> UPLOAD SUCCESSFUL:
             </span>
-            <span className="text-[10px] text-zinc-400">Copy & Paste in template</span>
+            <span className="text-[10px] text-zinc-400">Direct Link Ready</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -194,20 +203,33 @@ export default function MediaUploader() {
             </button>
           </div>
 
-          {/* Instant Visual Preview */}
+          {/* Visual Preview */}
           {fileType === "image" && (
             <div className="mt-3 flex items-center gap-3 border-t border-zinc-800/80 pt-3">
-              <div className="h-14 w-14 rounded-xl overflow-hidden border border-emerald-500/50 bg-black shrink-0 shadow-md">
-                <img
-                  src={uploadedUrl}
-                  alt="Verified Preview"
-                  referrerPolicy="no-referrer"
-                  className="h-full w-full object-cover"
-                />
+              <div className="h-14 w-14 rounded-xl overflow-hidden border border-emerald-500/50 bg-black shrink-0">
+                {!imgLoadFailed ? (
+                  <img
+                    src={uploadedUrl}
+                    alt="Direct Preview"
+                    referrerPolicy="no-referrer"
+                    onError={() => setImgLoadFailed(true)}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center text-[10px] text-red-400 bg-red-950/40">
+                    Failed
+                  </div>
+                )}
               </div>
               <div className="text-left">
-                <p className="text-xs font-bold text-white">Live Image Preview Working ✅</p>
-                <p className="text-[10px] text-zinc-400">Ye link template me 100% chalega bina kisi question mark ke.</p>
+                <p className="text-xs font-bold text-white">
+                  {!imgLoadFailed ? "Image Verified Clean ✅" : "Image link block detected"}
+                </p>
+                <p className="text-[10px] text-zinc-400">
+                  {!imgLoadFailed
+                    ? "Is link ko copy karke kisi bhi template me use kar sakte ho."
+                    : "Kripya dusri photo upload karein."}
+                </p>
               </div>
             </div>
           )}
