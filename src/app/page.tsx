@@ -30,6 +30,19 @@ const TEMPLATES = [
     iconColor: "text-pink-400 bg-pink-500/10",
   },
     {
+    id: "birthday-exe",
+    title: "BIRTHDAY.exe 💘💀",
+    target: "Girlfriend System Crashed",
+    description: "System panic boot, funny girlfriend report, BF quiz, blow candle ceremony, drama meter & secret letter.",
+    badge: "Next-Level Funny 😂",
+    href: "/create/birthday-exe",
+    border: "hover:border-purple-500/50",
+    glow: "group-hover:shadow-purple-500/20",
+    icon: Skull,
+    iconColor: "text-purple-400 bg-purple-500/10",
+  },
+
+    {
     id: "jaan",
     title: "Jaan's Birthday 🎂👑",
     target: "Girlfriend / My Princess",
