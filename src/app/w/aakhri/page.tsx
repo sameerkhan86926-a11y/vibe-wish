@@ -340,7 +340,8 @@ export default function AakhriMessageReceiver() {
 
             <div className="my-auto">
               <div className="aspect-4/3 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
-                <img src={selectedMemory.imgUrl} alt="Memory" className="h-full w-full object-cover" />
+               <img src={data.photoUrl} alt="Memory" referrerPolicy="no-referrer" className="..." />
+
               </div>
               <p className="mt-4 text-xs font-serif text-zinc-200 leading-relaxed italic bg-zinc-900/60 p-4 rounded-2xl border border-white/5">
                 "{selectedMemory.caption}"
