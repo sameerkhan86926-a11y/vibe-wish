@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600";
+
 export default function AakhriMessageReceiver() {
   const [data, setData] = useState<AakhriMessagePayload | null>(null);
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -41,39 +43,43 @@ export default function AakhriMessageReceiver() {
       const params = new URLSearchParams(hash || window.location.search);
       const raw = params.get("d");
       if (raw) {
-        setData(decodeData(raw) as unknown as AakhriMessagePayload);
-      } else {
-        // High quality realistic default story
-        setData({
-          recipientName: "Noor",
-          senderName: "Kabir",
-          chatMessages: [
-            "Hey... online ho?",
-            "Pata nahi ye sab kaise start karun...",
-            "Phone gallery scroll kar raha tha, aur achanak purani baatein yaad aane lagi.",
-            "Shayad us waqt hum dono bohot young aur confused the.",
-            "Lekin ek sach hamesha wahi raha...",
-            "Bas aaj tumse kuch kehna tha."
-          ],
-          memories: [
-            {
-              id: "1",
-              dateStr: "12 Nov 2022",
-              imgUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600",
-              caption: "Wo pehli baar jab hum bina kisi reason ke ghanton chalte rahe the. Koi jaldi nahi thi ghar jaane ki."
-            },
-            {
-              id: "2",
-              dateStr: "04 Mar 2023",
-              imgUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600",
-              caption: "Hawa thandi thi aur tumhari coffee thandi ho chuki thi, par baatein khatam hone ka naam nahi le rahi thi."
-            }
-          ],
-          voiceTranscript: "Main bas ye kehna chahta tha ki chahe waqt aage badh gaya ho, lekin mere dil ka ek hissa hamesha tumhari khushi mangta rahega. Tum apna khayal rakhna.",
-          unsentDraft: `Main kai baar type karke mita chuka hoon.\n\nKuch baatein bolne ke liye sahi waqt dhoondhte dhoondhte zindagi aage nikal jaati hai. Shayad main us waqt utna mature nahi tha jitna hona chahiye tha.\n\nPar agar ek cheez sach hai toh wo ye ki tum meri zindagi ka sabse khoobsurat chapter rahi ho. Bina kisi shiqwe ke, bas ek shukriya tumhari presence ke liye.`,
-          finalSecret: `Har kahani ka anjaam shadi ya sath rehna nahi hota.\n\nKuch log zindagi mein isliye aate hain taaki wo humein mehsoos karwa sakein ki pyaar asal mein hota kya hai.\n\nTum jahan bhi raho, hamesha khush rehna. You will always be respected and remembered.`
-        });
+        const decoded = decodeData(raw) as unknown as AakhriMessagePayload;
+        if (decoded) {
+          setData(decoded);
+          return;
+        }
       }
+
+      // Default fallback
+      setData({
+        recipientName: "Noor",
+        senderName: "Kabir",
+        chatMessages: [
+          "Hey... online ho?",
+          "Pata nahi ye sab kaise start karun...",
+          "Phone gallery scroll kar raha tha, aur achanak purani baatein yaad aane lagi.",
+          "Shayad us waqt hum dono bohot young aur confused the.",
+          "Lekin ek sach hamesha wahi raha...",
+          "Bas aaj tumse kuch kehna tha."
+        ],
+        memories: [
+          {
+            id: "1",
+            dateStr: "12 Nov 2022",
+            imgUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600",
+            caption: "Wo pehli baar jab hum bina kisi reason ke ghanton chalte rahe the. Koi jaldi nahi thi ghar jaane ki."
+          },
+          {
+            id: "2",
+            dateStr: "04 Mar 2023",
+            imgUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600",
+            caption: "Hawa thandi thi aur tumhari coffee thandi ho chuki thi, par baatein khatam hone ka naam nahi le rahi thi."
+          }
+        ],
+        voiceTranscript: "Main bas ye kehna chahta tha ki chahe waqt aage badh gaya ho, lekin mere dil ka ek hissa hamesha tumhari khushi mangta rahega. Tum apna khayal rakhna.",
+        unsentDraft: `Main kai baar type karke mita chuka hoon.\n\nKuch baatein bolne ke liye sahi waqt dhoondhte dhoondhte zindagi aage nikal jaati hai. Shayad main us waqt utna mature nahi tha jitna hona chahiye tha.\n\nPar agar ek cheez sach hai toh wo ye ki tum meri zindagi ka sabse khoobsurat chapter rahi ho. Bina kisi shiqwe ke, bas ek shukriya tumhari presence ke liye.`,
+        finalSecret: `Har kahani ka anjaam shadi ya sath rehna nahi hota.\n\nKuch log zindagi mein isliye aate hain taaki wo humein mehsoos karwa sakein ki pyaar asal mein hota kya hai.\n\nTum jahan bhi raho, hamesha khush rehna. You will always be respected and remembered.`
+      });
     }
   }, []);
 
@@ -88,7 +94,7 @@ export default function AakhriMessageReceiver() {
         setVisibleMessages((prev) => [...prev, data.chatMessages[chatProgressIdx]]);
         setChatProgressIdx((prev) => prev + 1);
         chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 1600);
+      }, 1500);
 
       return () => clearTimeout(timer);
     }
@@ -99,12 +105,10 @@ export default function AakhriMessageReceiver() {
   return (
     <main className="min-h-screen bg-[#070709] text-zinc-100 flex items-center justify-center p-0 sm:p-4 selection:bg-zinc-700 selection:text-white font-sans overflow-x-hidden">
       
-      {/* ========================================================
-          PHONE HARDWARE BEZEL / CHASSIS
-      ======================================================== */}
+      {/* PHONE BEZEL */}
       <div className="relative w-full max-w-[420px] h-screen sm:h-[860px] bg-[#0c0d11] sm:rounded-[46px] border sm:border-zinc-800 shadow-2xl flex flex-col overflow-hidden sm:ring-8 sm:ring-zinc-900/60">
         
-        {/* Dynamic Island / Hardware Speaker & Status Bar */}
+        {/* Dynamic Island / Hardware Header */}
         <div className="relative z-40 bg-transparent px-6 pt-3 pb-2 flex items-center justify-between text-xs font-mono text-zinc-300 shrink-0 select-none">
           <span>{currentTimeStr}</span>
           <div className="h-4 w-24 bg-black rounded-full border border-white/5 flex items-center justify-center" />
@@ -114,18 +118,15 @@ export default function AakhriMessageReceiver() {
           </div>
         </div>
 
-        {/* ========================================================
-            1. REAL PHONE LOCK SCREEN
-        ======================================================== */}
+        {/* 1. REAL PHONE LOCK SCREEN */}
         {!isUnlocked ? (
           <div className="relative flex-1 flex flex-col justify-between p-6 bg-[radial-gradient(#1e1f29_1px,transparent_1px)] [background-size:18px_18px] text-center select-none">
-            {/* Top Date & Clock */}
             <div className="pt-8">
               <p className="text-xs font-mono text-zinc-400 tracking-wider uppercase">{currentDateStr}</p>
               <h1 className="text-6xl font-extralight tracking-tight text-white mt-1 font-mono">{currentTimeStr}</h1>
             </div>
 
-            {/* Realistic Notification Card */}
+            {/* Notification Card */}
             <div className="mx-auto w-full max-w-sm rounded-3xl bg-zinc-900/80 border border-white/10 p-4 backdrop-blur-xl text-left shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div className="flex items-center justify-between text-[11px] text-zinc-400 font-mono">
                 <span className="flex items-center gap-1.5 font-bold text-rose-300">
@@ -140,7 +141,7 @@ export default function AakhriMessageReceiver() {
               </p>
             </div>
 
-            {/* Unlock Action Button */}
+            {/* Unlock Button */}
             <div className="pb-8 flex flex-col items-center">
               <button
                 type="button"
@@ -155,12 +156,10 @@ export default function AakhriMessageReceiver() {
             </div>
           </div>
         ) : (
-          /* ========================================================
-              UNLOCKED PHONE: MESSAGING & ARCHIVE VIEW
-          ======================================================== */
+          /* UNLOCKED CHAT & ARCHIVE */
           <div className="flex-1 flex flex-col bg-[#0c0d11] overflow-hidden">
             
-            {/* Realistic Messenger App Topbar */}
+            {/* Topbar */}
             <header className="px-4 py-3 bg-[#13151b] border-b border-white/5 flex items-center justify-between shrink-0 select-none">
               <div className="flex items-center gap-3">
                 <button
@@ -203,7 +202,7 @@ export default function AakhriMessageReceiver() {
                 </span>
               </div>
 
-              {/* Render sequential chat bubbles */}
+              {/* Chat bubbles */}
               {visibleMessages.map((msg, i) => (
                 <div key={i} className="flex justify-start animate-in fade-in slide-in-from-bottom-2 duration-300">
                   <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-[#1c1e27] border border-white/5 p-3 text-xs text-zinc-200 leading-relaxed shadow-sm font-sans">
@@ -216,7 +215,7 @@ export default function AakhriMessageReceiver() {
                 </div>
               ))}
 
-              {/* Realistic Typing Indicator */}
+              {/* Typing dots */}
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="rounded-2xl rounded-tl-sm bg-[#1c1e27] border border-white/5 px-3 py-2 flex items-center gap-1 shadow-sm">
@@ -227,8 +226,8 @@ export default function AakhriMessageReceiver() {
                 </div>
               )}
 
-              {/* 3. HIDDEN MEMORIES SECTION (Unlocked mid-chat) */}
-              {chatProgressIdx >= 3 && (
+              {/* Camera Roll Memories */}
+              {chatProgressIdx >= 3 && data.memories && (
                 <div className="my-6 rounded-2xl border border-white/5 bg-black/40 p-3.5 animate-in fade-in duration-500">
                   <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400 mb-2.5">
                     <span className="flex items-center gap-1 text-rose-300 font-bold">
@@ -245,9 +244,13 @@ export default function AakhriMessageReceiver() {
                         className="cursor-pointer group relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-zinc-900"
                       >
                         <img
-                          src={mem.imgUrl}
+                          src={mem.imgUrl || FALLBACK_PHOTO}
                           alt="Memory"
                           referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = FALLBACK_PHOTO;
+                          }}
                           className="h-full w-full object-cover filter contrast-105 group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/40 to-transparent p-2 text-[10px] font-mono text-zinc-300">
@@ -259,7 +262,7 @@ export default function AakhriMessageReceiver() {
                 </div>
               )}
 
-              {/* 4. UNSENT VOICE MESSAGE */}
+              {/* Voice Memo */}
               {chatProgressIdx >= data.chatMessages.length && (
                 <div className="my-4 animate-in fade-in duration-500">
                   <p className="text-[10px] font-mono text-zinc-500 mb-1.5 uppercase tracking-wider">Unsent Audio Memo</p>
@@ -270,7 +273,7 @@ export default function AakhriMessageReceiver() {
                 </div>
               )}
 
-              {/* 6. UNLOCK THE FINAL LOCKED MEMORY CARD */}
+              {/* Locked Final Message */}
               {chatProgressIdx >= data.chatMessages.length && (
                 <div className="my-6 pt-4 border-t border-white/5 animate-in fade-in duration-500">
                   <div className="rounded-2xl border border-rose-500/20 bg-gradient-to-b from-rose-950/20 to-black/60 p-4 text-center">
@@ -309,7 +312,7 @@ export default function AakhriMessageReceiver() {
               <div ref={chatBottomRef} />
             </div>
 
-            {/* Bottom Input Mimic */}
+            {/* Bottom Input */}
             <div className="px-4 py-3 bg-[#13151b] border-t border-white/5 flex items-center justify-between text-xs text-zinc-500 font-mono select-none">
               <span>Read-only archive mode</span>
               <button
@@ -323,28 +326,30 @@ export default function AakhriMessageReceiver() {
           </div>
         )}
 
-        {/* ========================================================
-            MODAL: INDIVIDUAL PHOTO MEMORY DIALOGUE
-        ======================================================== */}
+        {/* MODAL: PHOTO MEMORY DETAIL */}
         {selectedMemory && (
-          <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md p-6 flex flex-col justify-between animate-in fade-in duration-300">
+          <div className="absolute inset-0 z-50 bg-black/95 backdrop-blur-md p-6 flex flex-col justify-between animate-in fade-in duration-300">
             <div className="flex justify-between items-center text-xs font-mono text-zinc-400">
               <span>{selectedMemory.dateStr}</span>
               <button
                 type="button"
                 onClick={() => setSelectedMemory(null)}
-                className="cursor-pointer text-white font-bold px-2 py-1 bg-zinc-800 rounded-lg"
+                className="cursor-pointer text-white font-bold px-3 py-1 bg-zinc-800 rounded-lg hover:bg-zinc-700"
               >
                 Close ✕
               </button>
             </div>
 
             <div className="my-auto">
-              <div className="aspect-4/3 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+              <div className="aspect-4/3 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-zinc-950 flex items-center justify-center">
                 <img
-                  src={selectedMemory.imgUrl}
+                  src={selectedMemory.imgUrl || FALLBACK_PHOTO}
                   alt={selectedMemory.caption || "Memory"}
                   referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = FALLBACK_PHOTO;
+                  }}
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -357,9 +362,7 @@ export default function AakhriMessageReceiver() {
           </div>
         )}
 
-        {/* ========================================================
-            MODAL 5: THE MESSAGE THAT WAS NEVER SENT (HANDWRITTEN NOTE)
-        ======================================================== */}
+        {/* MODAL: UNSENT DRAFT */}
         {draftOpened && (
           <div className="absolute inset-0 z-50 bg-[#0e0f14]/95 backdrop-blur-xl p-6 flex flex-col justify-between animate-in zoom-in-95 duration-300">
             <div className="flex justify-between items-center text-xs font-mono text-zinc-400 border-b border-white/10 pb-3">
@@ -369,13 +372,12 @@ export default function AakhriMessageReceiver() {
               <button
                 type="button"
                 onClick={() => setDraftOpened(false)}
-                className="cursor-pointer text-zinc-300 hover:text-white px-2 py-1 bg-zinc-800 rounded-lg"
+                className="cursor-pointer text-zinc-300 hover:text-white px-2.5 py-1 bg-zinc-800 rounded-lg"
               >
                 Close ✕
               </button>
             </div>
 
-            {/* Handwritten Paper Styling */}
             <div className="my-auto rounded-3xl bg-[#181922] border border-white/10 p-6 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500/40 via-purple-500/40 to-transparent" />
               <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3">
@@ -393,9 +395,7 @@ export default function AakhriMessageReceiver() {
           </div>
         )}
 
-        {/* ========================================================
-            7. FINAL ENDING — REAL FEELINGS EPILOGUE
-        ======================================================== */}
+        {/* FINAL ENDING EPILOGUE */}
         {finalEndingReached && (
           <div className="absolute inset-0 z-50 bg-black p-6 flex flex-col justify-between text-center animate-in fade-in duration-500 select-none">
             <div className="pt-4 flex justify-end">
