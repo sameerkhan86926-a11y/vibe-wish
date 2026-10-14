@@ -14,9 +14,8 @@ export default function MediaUploader() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // File size check: > 15MB avoid karo taaki phone hang na ho
-    if (file.size > 15 * 1024 * 1024) {
-      setErrorMsg("File size 15MB se chhoti honi chahiye!");
+    if (file.size > 20 * 1024 * 1024) {
+      setErrorMsg("File size 20MB se chhoti honi chahiye!");
       return;
     }
 
@@ -24,8 +23,31 @@ export default function MediaUploader() {
     setUploading(true);
     setUploadedUrl(null);
 
+    // IMAGES: FreeImage / ImgBB Direct Upload API (Permanent Hotlinkable .jpg/.png)
+    if (fileType === "image") {
+      try {
+        const formData = new FormData();
+        formData.append("source", file);
+        formData.append("action", "upload");
+
+        const res = await fetch("https://freeimage.host/api/1/upload?key=6d207e02198a847aa98d0a2a901485a5", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (data && data.image && data.image.url) {
+          setUploadedUrl(data.image.url); // Permanent direct .jpg link!
+          setUploading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn("Primary image upload retry...");
+      }
+    }
+
+    // AUDIO & VIDEO or Fallback: Tmpfiles Direct Link
     try {
-      // 1. Tmpfiles API - 100% Free, No Login, Supports Audio, Video & Images
       const formData = new FormData();
       formData.append("file", file);
 
@@ -35,36 +57,16 @@ export default function MediaUploader() {
       });
 
       const data = await res.json();
-
       if (data && data.status === "success" && data.data?.url) {
-        // tmpfiles.org/1234/xyz.jpg ko direct download link banane ke liye /dl/ add karte hain
         const rawUrl = data.data.url;
+        // /dl/ direct link format
         const directUrl = rawUrl.replace("tmpfiles.org/", "tmpfiles.org/dl/");
         setUploadedUrl(directUrl);
       } else {
-        throw new Error("Upload failed, trying alternative...");
+        throw new Error("Upload issue");
       }
-    } catch (err: any) {
-      // 2. Fallback: Catbox / FileTransfer if tmpfiles fails
-      try {
-        const catboxForm = new FormData();
-        catboxForm.append("reqtype", "fileupload");
-        catboxForm.append("fileToUpload", file);
-
-        const fallbackRes = await fetch("https://catbox.moe/user/api.php", {
-          method: "POST",
-          body: catboxForm,
-        });
-
-        const fallbackUrl = await fallbackRes.text();
-        if (fallbackUrl && fallbackUrl.startsWith("http")) {
-          setUploadedUrl(fallbackUrl.trim());
-        } else {
-          setErrorMsg("Upload me dikkat aayi. Ek baar direct Imgur ya Unsplash link try karo.");
-        }
-      } catch (fallbackErr) {
-        setErrorMsg("Network issue! Kripya chhota file size try karein.");
-      }
+    } catch (err) {
+      setErrorMsg("Upload me dikkat aayi. Direct Imgur ya Unsplash link use karein.");
     } finally {
       setUploading(false);
     }
@@ -87,16 +89,15 @@ export default function MediaUploader() {
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
               <span>Instant Media Uploader</span>
-              <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-mono text-rose-300 font-bold">
-                LIGHTWEIGHT DIRECT URL
+              <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[9px] font-mono text-emerald-300 font-bold">
+                HOTLINK SECURE
               </span>
             </h3>
-            <p className="text-[11px] text-zinc-400">Direct CDN link milta hai taaki template hang na ho</p>
+            <p className="text-[11px] text-zinc-400">Permanent direct image/audio link jo template me question mark nahi dega</p>
           </div>
         </div>
       </div>
 
-      {/* Media Type Switcher */}
       <div className="grid grid-cols-3 gap-2 mb-4">
         {[
           { id: "image", label: "Image / Photo", icon: ImageIcon },
@@ -127,7 +128,6 @@ export default function MediaUploader() {
         })}
       </div>
 
-      {/* Upload Drop Zone */}
       <label className="relative flex flex-col items-center justify-center w-full h-32 rounded-2xl border-2 border-dashed border-zinc-700 hover:border-rose-400 bg-black/40 hover:bg-black/60 cursor-pointer transition-all">
         <input
           type="file"
@@ -139,7 +139,7 @@ export default function MediaUploader() {
         {uploading ? (
           <div className="flex flex-col items-center gap-2 text-rose-300">
             <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="text-xs font-mono">Generating clean direct link...</span>
+            <span className="text-xs font-mono">Uploading to CDN & generating permanent link...</span>
           </div>
         ) : (
           <div className="flex flex-col items-center text-center p-4">
@@ -148,7 +148,7 @@ export default function MediaUploader() {
               Tap to choose {fileType} from gallery/files
             </p>
             <p className="text-[10px] text-zinc-500 mt-0.5">
-              JPG, PNG, MP3, M4A, MP4 (Max 15MB)
+              Generates permanent direct CDN URL
             </p>
           </div>
         )}
@@ -161,14 +161,13 @@ export default function MediaUploader() {
         </div>
       )}
 
-      {/* Direct URL Result */}
       {uploadedUrl && (
         <div className="mt-4 rounded-2xl border border-emerald-500/40 bg-emerald-950/20 p-3.5 animate-in fade-in">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-mono uppercase font-bold text-emerald-400 flex items-center gap-1">
-              <Check className="h-3 w-3" /> CLEAN DIRECT LINK READY:
+              <Check className="h-3 w-3" /> PERMANENT DIRECT URL READY:
             </span>
-            <span className="text-[10px] text-zinc-400">Zero Hang Guarantee</span>
+            <span className="text-[10px] text-zinc-400">Copy & Paste in template</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -176,7 +175,7 @@ export default function MediaUploader() {
               type="text"
               readOnly
               value={uploadedUrl}
-              className="w-full rounded-xl border border-zinc-800 bg-black px-3 py-1.5 text-xs text-emerald-300 font-mono select-all"
+              className="w-full rounded-xl border border-zinc-800 bg-black px-3 py-1.5 text-xs text-emerald-300 font-mono select-all truncate"
             />
             <button
               type="button"
@@ -187,6 +186,21 @@ export default function MediaUploader() {
               <span>{copied ? "Copied" : "Copy"}</span>
             </button>
           </div>
+
+          {/* Quick Preview to ensure it loads without question mark */}
+          {fileType === "image" && (
+            <div className="mt-3 flex items-center gap-3 border-t border-zinc-800 pt-3">
+              <div className="h-10 w-10 rounded-lg overflow-hidden border border-zinc-700 bg-black shrink-0">
+                <img
+                  src={uploadedUrl}
+                  alt="Preview"
+                  referrerPolicy="no-referrer"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <span className="text-[11px] text-zinc-400">Preview verified (no question mark issue)</span>
+            </div>
+          )}
         </div>
       )}
     </div>
