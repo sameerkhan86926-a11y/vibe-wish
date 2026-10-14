@@ -6,6 +6,9 @@ import { encodeData } from "@/lib/encoder";
 import { AakhriMessagePayload } from "@/lib/aakhriTypes";
 import { ArrowLeft, Copy, Check } from "lucide-react";
 
+const fallbackImg1 = "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600";
+const fallbackImg2 = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600";
+
 export default function AakhriCreatorPage() {
   const [recipientName, setRecipientName] = useState("Noor");
   const [senderName, setSenderName] = useState("Kabir");
@@ -15,11 +18,11 @@ export default function AakhriCreatorPage() {
   const [msg3, setMsg3] = useState("Phone gallery scroll kar raha tha, aur achanak purani baatein yaad aane lagi.");
   const [msg4, setMsg4] = useState("Bas aaj tumse kuch kehna tha.");
 
-  const [photo1Url, setPhoto1Url] = useState("https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600");
+  const [photo1Url, setPhoto1Url] = useState(fallbackImg1);
   const [caption1, setCaption1] = useState("Wo pehli baar jab hum bina kisi reason ke ghanton chalte rahe the.");
   const [date1, setDate1] = useState("12 Nov 2022");
 
-  const [photo2Url, setPhoto2Url] = useState("https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600");
+  const [photo2Url, setPhoto2Url] = useState(fallbackImg2);
   const [caption2, setCaption2] = useState("Hawa thandi thi aur baatein khatam hone ka naam nahi le rahi thi.");
   const [date2, setDate2] = useState("04 Mar 2023");
 
@@ -42,11 +45,8 @@ export default function AakhriCreatorPage() {
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const fallbackImg1 = "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600";
-    const fallbackImg2 = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600";
-
-    const cleanImg1 = photo1Url.trim().length > 5 ? photo1Url.trim() : fallbackImg1;
-    const cleanImg2 = photo2Url.trim().length > 5 ? photo2Url.trim() : fallbackImg2;
+    const cleanImg1 = photo1Url.trim().length > 10 ? photo1Url.trim() : fallbackImg1;
+    const cleanImg2 = photo2Url.trim().length > 10 ? photo2Url.trim() : fallbackImg2;
 
     const payload: AakhriMessagePayload = {
       recipientName: recipientName.trim(),
@@ -64,7 +64,6 @@ export default function AakhriCreatorPage() {
 
     const encoded = encodeData(payload as any);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    // Base path dynamic match
     const isGitHubPages = origin.includes("github.io");
     const basePath = isGitHubPages ? "/vibe-wish" : "";
     setGeneratedLink(`${origin}${basePath}/w/aakhri/#d=${encoded}`);
@@ -158,7 +157,7 @@ export default function AakhriCreatorPage() {
             />
           </div>
 
-          {/* Memories (Both Photo 1 & Photo 2) */}
+          {/* Memories (Both Photo 1 & Photo 2 with Real-time Verification) */}
           <div className="space-y-4 border-t border-zinc-800/80 pt-4">
             <span className="text-xs font-bold font-mono text-zinc-400 uppercase tracking-wider block">
               2. Camera Roll Moments (Real Photo Memories)
@@ -166,7 +165,22 @@ export default function AakhriCreatorPage() {
 
             {/* Photo 1 */}
             <div className="p-3.5 rounded-2xl bg-black/60 border border-zinc-800 space-y-2">
-              <span className="text-[11px] font-bold text-rose-400 font-mono">Photo Memory #1</span>
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-rose-400 font-mono">Photo Memory #1</span>
+                {photo1Url && (
+                  <div className="h-7 w-7 rounded-md overflow-hidden border border-zinc-700 bg-zinc-900 shrink-0">
+                    <img
+                      src={photo1Url}
+                      alt="Preview 1"
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = fallbackImg1;
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <input
                   type="text"
@@ -194,7 +208,22 @@ export default function AakhriCreatorPage() {
 
             {/* Photo 2 */}
             <div className="p-3.5 rounded-2xl bg-black/60 border border-zinc-800 space-y-2">
-              <span className="text-[11px] font-bold text-rose-400 font-mono">Photo Memory #2</span>
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-rose-400 font-mono">Photo Memory #2</span>
+                {photo2Url && (
+                  <div className="h-7 w-7 rounded-md overflow-hidden border border-zinc-700 bg-zinc-900 shrink-0">
+                    <img
+                      src={photo2Url}
+                      alt="Preview 2"
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = fallbackImg2;
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <input
                   type="text"
