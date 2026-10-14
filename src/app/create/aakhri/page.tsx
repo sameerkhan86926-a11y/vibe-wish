@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { encodeData } from "@/lib/encoder";
 import { AakhriMessagePayload } from "@/lib/aakhriTypes";
-import { ArrowLeft, MessageSquare, Copy, Check, Smartphone, Mic } from "lucide-react";
+import { ArrowLeft, Copy, Check } from "lucide-react";
 
 export default function AakhriCreatorPage() {
   const [recipientName, setRecipientName] = useState("Noor");
@@ -42,13 +42,19 @@ export default function AakhriCreatorPage() {
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const fallbackImg1 = "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600";
+    const fallbackImg2 = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600";
+
+    const cleanImg1 = photo1Url.trim().length > 5 ? photo1Url.trim() : fallbackImg1;
+    const cleanImg2 = photo2Url.trim().length > 5 ? photo2Url.trim() : fallbackImg2;
+
     const payload: AakhriMessagePayload = {
       recipientName: recipientName.trim(),
       senderName: senderName.trim(),
       chatMessages: [msg1.trim(), msg2.trim(), msg3.trim(), msg4.trim()].filter(Boolean),
       memories: [
-        { id: "1", dateStr: date1.trim(), imgUrl: photo1Url.trim(), caption: caption1.trim() },
-        { id: "2", dateStr: date2.trim(), imgUrl: photo2Url.trim(), caption: caption2.trim() }
+        { id: "1", dateStr: date1.trim() || "Nov 2022", imgUrl: cleanImg1, caption: caption1.trim() || "Memory 1" },
+        { id: "2", dateStr: date2.trim() || "Mar 2023", imgUrl: cleanImg2, caption: caption2.trim() || "Memory 2" }
       ],
       voiceAudioUrl: voiceAudioUrl.trim() || undefined,
       voiceTranscript: voiceTranscript.trim(),
@@ -58,7 +64,10 @@ export default function AakhriCreatorPage() {
 
     const encoded = encodeData(payload as any);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    setGeneratedLink(`${origin}/vibe-wish/w/aakhri/#d=${encoded}`);
+    // Base path dynamic match
+    const isGitHubPages = origin.includes("github.io");
+    const basePath = isGitHubPages ? "/vibe-wish" : "";
+    setGeneratedLink(`${origin}${basePath}/w/aakhri/#d=${encoded}`);
   };
 
   const handleCopy = () => {
@@ -149,32 +158,65 @@ export default function AakhriCreatorPage() {
             />
           </div>
 
-          {/* Memories */}
-          <div className="space-y-3 border-t border-zinc-800/80 pt-4">
-            <span className="text-xs font-bold font-mono text-zinc-400 uppercase tracking-wider">
-              2. Camera Roll Moments (Real Photo memories)
+          {/* Memories (Both Photo 1 & Photo 2) */}
+          <div className="space-y-4 border-t border-zinc-800/80 pt-4">
+            <span className="text-xs font-bold font-mono text-zinc-400 uppercase tracking-wider block">
+              2. Camera Roll Moments (Real Photo Memories)
             </span>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <input
-                type="text"
-                placeholder="Date (e.g. 12 Nov 2022)"
-                value={date1}
-                onChange={(e) => setDate1(e.target.value)}
-                className="rounded-xl border border-zinc-800 bg-black px-3 py-2 text-xs text-zinc-200"
-              />
-              <input
-                type="url"
-                placeholder="Photo URL"
-                value={photo1Url}
-                onChange={(e) => setPhoto1Url(e.target.value)}
-                className="sm:col-span-2 rounded-xl border border-zinc-800 bg-black px-3 py-2 text-xs text-zinc-200"
-              />
+
+            {/* Photo 1 */}
+            <div className="p-3.5 rounded-2xl bg-black/60 border border-zinc-800 space-y-2">
+              <span className="text-[11px] font-bold text-rose-400 font-mono">Photo Memory #1</span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  placeholder="Date (e.g. 12 Nov 2022)"
+                  value={date1}
+                  onChange={(e) => setDate1(e.target.value)}
+                  className="rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200"
+                />
+                <input
+                  type="url"
+                  placeholder="Photo 1 Direct URL"
+                  value={photo1Url}
+                  onChange={(e) => setPhoto1Url(e.target.value)}
+                  className="sm:col-span-2 rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200"
+                />
+              </div>
               <input
                 type="text"
                 placeholder="Photo 1 Caption"
                 value={caption1}
                 onChange={(e) => setCaption1(e.target.value)}
-                className="sm:col-span-3 rounded-xl border border-zinc-800 bg-black px-3 py-2 text-xs text-zinc-200"
+                className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200"
+              />
+            </div>
+
+            {/* Photo 2 */}
+            <div className="p-3.5 rounded-2xl bg-black/60 border border-zinc-800 space-y-2">
+              <span className="text-[11px] font-bold text-rose-400 font-mono">Photo Memory #2</span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  placeholder="Date (e.g. 04 Mar 2023)"
+                  value={date2}
+                  onChange={(e) => setDate2(e.target.value)}
+                  className="rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200"
+                />
+                <input
+                  type="url"
+                  placeholder="Photo 2 Direct URL"
+                  value={photo2Url}
+                  onChange={(e) => setPhoto2Url(e.target.value)}
+                  className="sm:col-span-2 rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200"
+                />
+              </div>
+              <input
+                type="text"
+                placeholder="Photo 2 Caption"
+                value={caption2}
+                onChange={(e) => setCaption2(e.target.value)}
+                className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-200"
               />
             </div>
           </div>
