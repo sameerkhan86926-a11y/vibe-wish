@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare  } from "lucide-react";
+import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake  } from "lucide-react";
 
 const TEMPLATES = [
   {
@@ -14,6 +14,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "manaao",
+    title: "Mission: Manaao Them 🥺❤️",
+    target: "When Someone is Angry",
+    description: "Gussa warning meter, funny sorry machine, simulated chat banter, mini peace tasks & sincere letter.",
+    badge: "Life Saver 🩹",
+    href: "/create/manaao",
+    border: "hover:border-rose-400/50",
+    glow: "group-hover:shadow-rose-400/20",
+    icon: HeartHandshake,
+    iconColor: "text-rose-300 bg-rose-500/10",
+  },
+
     {
     id: "us",
     title: "US.exe ❤️ — Our Little Universe",
