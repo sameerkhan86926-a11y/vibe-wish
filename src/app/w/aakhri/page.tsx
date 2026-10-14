@@ -247,6 +247,7 @@ export default function AakhriMessageReceiver() {
                         <img
                           src={mem.imgUrl}
                           alt="Memory"
+                          referrerPolicy="no-referrer"
                           className="h-full w-full object-cover filter contrast-105 group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/40 to-transparent p-2 text-[10px] font-mono text-zinc-300">
@@ -340,8 +341,12 @@ export default function AakhriMessageReceiver() {
 
             <div className="my-auto">
               <div className="aspect-4/3 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
-               <img src={data.photoUrl} alt="Memory" referrerPolicy="no-referrer" className="..." />
-
+                <img
+                  src={selectedMemory.imgUrl}
+                  alt={selectedMemory.caption || "Memory"}
+                  referrerPolicy="no-referrer"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <p className="mt-4 text-xs font-serif text-zinc-200 leading-relaxed italic bg-zinc-900/60 p-4 rounded-2xl border border-white/5">
                 "{selectedMemory.caption}"
