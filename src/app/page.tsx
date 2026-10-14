@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake  } from "lucide-react";
+import { Heart, Flame, Award, Sparkles, ArrowRight, Smile, MessageSquare, HeartHandshake, Flower2  } from "lucide-react";
 
 const TEMPLATES = [
   {
@@ -14,6 +14,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "blooming",
+    title: "Blooming Love ❤️🌹",
+    target: "Grand Proposal & Romance",
+    description: "Moonlit flower garden, interactive bud bloom, memory cards, sealed parchment & grand proposal scene.",
+    badge: "Grand Proposal 💍",
+    href: "/create/blooming",
+    border: "hover:border-rose-500/50",
+    glow: "group-hover:shadow-rose-500/20",
+    icon: Flower2,
+    iconColor: "text-rose-400 bg-rose-500/10",
+  },
+
     {
     id: "manaao",
     title: "Mission: Manaao Them 🥺❤️",
