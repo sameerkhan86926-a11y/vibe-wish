@@ -12,6 +12,7 @@ import {
   Smartphone,
   Skull,
   Bell,
+  Moon,
 } from "lucide-react";
 import MediaUploader from "@/components/MediaUploader";
 
@@ -29,6 +30,19 @@ const TEMPLATES = [
     icon: Smile,
     iconColor: "text-pink-400 bg-pink-500/10",
   },
+    {
+    id: "nikah",
+    title: "The Nikah Invitation 🌙",
+    target: "Royal Islamic Wedding Card",
+    description: "Bismillah opening, ivory-gold foil card, authentic Sunnah Du'a, live countdown, Walima banquet & WhatsApp RSVP.",
+    badge: "Royal Nikah 🕌",
+    href: "/create/nikah",
+    border: "hover:border-[#d4af37]/50",
+    glow: "group-hover:shadow-[#d4af37]/20",
+    icon: Moon,
+    iconColor: "text-[#e5c07b] bg-[#d4af37]/10",
+  },
+
     {
     id: "birthday-exe",
     title: "BIRTHDAY.exe 💘💀",
