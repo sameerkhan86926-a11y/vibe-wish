@@ -31,6 +31,19 @@ const TEMPLATES = [
     iconColor: "text-pink-400 bg-pink-500/10",
   },
     {
+    id: "idiots",
+    title: "Shaadi Mubarak, You Two Idiots! 💍😂❤️",
+    target: "Best Friends Wedding Surprise",
+    description: "Breaking news intro, funny roasting ceremony, marriage starter pack, polaroid moments, heartfelt letter & grand finale.",
+    badge: "Wedding Banter 💍",
+    href: "/create/idiots",
+    border: "hover:border-rose-500/50",
+    glow: "group-hover:shadow-rose-500/20",
+    icon: Heart,
+    iconColor: "text-rose-400 bg-rose-500/10",
+  },
+
+    {
     id: "nikah",
     title: "The Nikah Invitation 🌙",
     target: "Royal Islamic Wedding Card",
