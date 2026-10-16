@@ -2,10 +2,9 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { saveUserActivity } from "@/lib/activityTracker";
+import { saveUserActivity, trackVibeEvent } from "@/lib/activityTracker";
 import { decodeData } from "@/lib/encoder";
 
-// Template path to readable title map
 const TEMPLATE_NAMES: Record<string, string> = {
   "/w/aakhri": "Ek Aakhri Message 💌",
   "/w/jaan": "Jaan's Birthday 🎂👑",
@@ -22,11 +21,8 @@ export default function AutoActivityTracker() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    // Sirf /w/ (receiver) pages ko track karna hai
     if (!pathname || !pathname.includes("/w/")) return;
 
-    // Hash se data nikaalo: #d=...
     const hash = window.location.hash;
     if (!hash.includes("d=")) return;
 
@@ -37,7 +33,6 @@ export default function AutoActivityTracker() {
       const decoded = decodeData(decodeURIComponent(raw));
       if (!decoded) return;
 
-      // Recipient name detect karo (alag-alag templates ke keys handle karke)
       const recipient =
         decoded.recipientName ||
         decoded.girlfriendName ||
@@ -49,16 +44,36 @@ export default function AutoActivityTracker() {
       const currentPath = Object.keys(TEMPLATE_NAMES).find((p) => pathname.includes(p)) || pathname;
       const templateTitle = TEMPLATE_NAMES[currentPath] || "Custom Vibe Wish";
 
-      // Automatically save to local activity history!
+      // Unique telemetry id based on compressed data string
+      const telemetryId = raw.substring(0, 20);
+
+      // 1. Save link in user's panel
       saveUserActivity({
+        id: telemetryId,
         templateId: currentPath,
         templateName: templateTitle,
         recipientName: recipient,
         url: window.location.href,
       });
-    } catch (err) {
-      // Quiet fail if corrupted
-    }
+
+      // 2. Track Click (View Count)
+      trackVibeEvent(telemetryId, "view");
+
+      // 3. Track What They Did (Buttons click listener)
+      const clickListener = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        const btn = target.closest("button");
+        if (btn) {
+          const btnText = btn.innerText.trim().slice(0, 28);
+          if (btnText) {
+            trackVibeEvent(telemetryId, "action", `Clicked: ${btnText}`);
+          }
+        }
+      };
+
+      window.addEventListener("click", clickListener);
+      return () => window.removeEventListener("click", clickListener);
+    } catch {}
   }, [pathname]);
 
   return null;
